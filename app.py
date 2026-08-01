@@ -200,3 +200,230 @@ fig4 = px.histogram(
 )
 
 st.plotly_chart(fig4, use_container_width=True)
+
+# -------------------------------------------------
+# PROFIT VS SALES
+# -------------------------------------------------
+st.subheader("💰 Sales vs Gross Profit")
+
+fig5 = px.scatter(
+    filtered_df,
+    x="Sales",
+    y="Gross Profit",
+    color="Division",
+    size="Units",
+    hover_name="Product Name",
+    title="Sales vs Gross Profit"
+)
+
+st.plotly_chart(fig5, use_container_width=True)
+
+# -------------------------------------------------
+# TOP 10 PRODUCTS
+# -------------------------------------------------
+st.subheader("🏆 Top 10 Products by Sales")
+
+top_products = (
+    filtered_df.groupby("Product Name")["Sales"]
+    .sum()
+    .sort_values(ascending=False)
+    .head(10)
+    .reset_index()
+)
+
+fig6 = px.bar(
+    top_products,
+    x="Sales",
+    y="Product Name",
+    orientation="h",
+    color="Sales",
+    title="Top 10 Products"
+)
+
+st.plotly_chart(fig6, use_container_width=True)
+
+# -------------------------------------------------
+# FACTORY PERFORMANCE
+# -------------------------------------------------
+if "Factory" in filtered_df.columns:
+
+    st.subheader("🏭 Factory Performance")
+
+    factory_df = (
+        filtered_df.groupby("Factory")
+        .agg({
+            "Sales": "sum",
+            "Gross Profit": "sum",
+            "Lead Time": "mean"
+        })
+        .reset_index()
+    )
+
+    st.dataframe(factory_df)
+
+# -------------------------------------------------
+# DATA TABLE
+# -------------------------------------------------
+st.subheader("📄 Complete Dataset")
+
+st.dataframe(filtered_df)
+
+# -------------------------------------------------
+# DOWNLOAD BUTTON
+# -------------------------------------------------
+csv = filtered_df.to_csv(index=False).encode("utf-8")
+
+st.download_button(
+    label="⬇ Download Filtered Data",
+    data=csv,
+    file_name="Filtered_Data.csv",
+    mime="text/csv"
+)
+
+# -------------------------------------------------
+# PROJECT INSIGHTS
+# -------------------------------------------------
+st.subheader("📌 Key Insights")
+
+st.markdown(f"""
+- **Total Orders:** {len(filtered_df)}
+- **Total Sales:** ${filtered_df['Sales'].sum():,.2f}
+- **Total Gross Profit:** ${filtered_df['Gross Profit'].sum():,.2f}
+- **Average Lead Time:** {filtered_df['Lead Time'].mean():.2f} days
+- **Average Profit Margin:** {filtered_df['Profit Margin'].mean():.2f}%
+- Use the sidebar filters to analyze different regions, divisions and shipping modes.
+""")
+
+# -------------------------------------------------
+# FACTORY RECOMMENDATION DASHBOARD
+# -------------------------------------------------
+
+st.subheader("🏭 Factory Recommendation Dashboard")
+
+factory_summary = (
+    filtered_df.groupby("Factory")
+    .agg(
+        Total_Sales=("Sales", "sum"),
+        Total_Profit=("Gross Profit", "sum"),
+        Avg_Lead_Time=("Lead Time", "mean")
+    )
+    .reset_index()
+)
+
+st.dataframe(factory_summary)
+
+# -------------------------------------------------
+# WHAT-IF SCENARIO ANALYSIS
+# -------------------------------------------------
+
+st.subheader("🔄 What-If Scenario Analysis")
+
+product = st.selectbox(
+    "Select Product",
+    sorted(filtered_df["Product Name"].unique())
+)
+
+scenario = filtered_df[
+    filtered_df["Product Name"] == product
+]
+
+st.write("### Selected Product Details")
+st.dataframe(scenario)
+
+st.metric(
+    "Average Lead Time",
+    f"{scenario['Lead Time'].mean():.2f} Days"
+)
+
+st.metric(
+    "Average Profit",
+    f"${scenario['Gross Profit'].mean():,.2f}"
+)
+
+# -------------------------------------------------
+# RISK PANEL
+# -------------------------------------------------
+
+st.subheader("⚠️ Risk & Impact Panel")
+
+high_risk = filtered_df[
+    filtered_df["Lead Time"] >
+    filtered_df["Lead Time"].mean()
+]
+
+st.metric(
+    "High Risk Orders",
+    len(high_risk)
+)
+
+st.dataframe(high_risk.head(20))
+
+# -------------------------------------------------
+# EXECUTIVE SUMMARY
+# -------------------------------------------------
+
+st.subheader("📋 Executive Summary")
+
+st.success("""
+✔ Sales and profit trends are displayed.
+
+✔ Shipping performance is monitored.
+
+✔ Lead time analysis identifies slow deliveries.
+
+✔ Factory performance helps identify optimization opportunities.
+
+✔ Dashboard supports business decision making.
+""")
+# -------------------------------------------------
+# OPTIMIZATION RECOMMENDATIONS
+# -------------------------------------------------
+
+st.subheader("🎯 Optimization Recommendations")
+
+recommendations = filtered_df.groupby("Factory").agg(
+    Average_Lead_Time=("Lead Time", "mean"),
+    Total_Sales=("Sales", "sum"),
+    Total_Profit=("Gross Profit", "sum")
+).reset_index()
+
+recommendations["Recommendation"] = recommendations["Average_Lead_Time"].apply(
+    lambda x: "Optimize Route" if x > recommendations["Average_Lead_Time"].mean()
+    else "Current Factory is Efficient"
+)
+
+st.dataframe(recommendations)
+
+# -------------------------------------------------
+# DASHBOARD FOOTER
+# -------------------------------------------------
+
+st.markdown("---")
+
+st.caption(
+    "Factory Reallocation & Shipping Optimization Recommendation System | "
+    "Developed using Streamlit, Python, Pandas and Plotly"
+)
+
+# -------------------------------------------------
+# ABOUT THE PROJECT
+# -------------------------------------------------
+
+st.markdown("---")
+
+st.header("📖 About the Project")
+
+st.write("""
+This dashboard was developed as part of the Unified Mentor Internship Project.
+
+The objective is to analyze shipping performance, sales, profitability,
+and factory allocation for Nassau Candy Distributor.
+
+Using interactive visualizations and recommendation logic, the dashboard
+helps identify opportunities to reduce lead time, improve operational
+efficiency, and support better factory allocation decisions.
+""")
+
+st.markdown("---")
+
+st.success("✅ Dashboard Completed Successfully")
