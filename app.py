@@ -125,3 +125,78 @@ col7.metric(
 )
 
 st.divider()
+# -------------------------------------------------
+# SALES BY REGION
+# -------------------------------------------------
+st.subheader("📈 Sales by Region")
+
+sales_region = (
+    filtered_df.groupby("Region")["Sales"]
+    .sum()
+    .reset_index()
+)
+
+fig1 = px.bar(
+    sales_region,
+    x="Region",
+    y="Sales",
+    color="Region",
+    title="Sales by Region"
+)
+
+st.plotly_chart(fig1, use_container_width=True)
+
+# -------------------------------------------------
+# SALES BY DIVISION
+# -------------------------------------------------
+st.subheader("🍫 Sales by Division")
+
+sales_division = (
+    filtered_df.groupby("Division")["Sales"]
+    .sum()
+    .reset_index()
+)
+
+fig2 = px.pie(
+    sales_division,
+    names="Division",
+    values="Sales",
+    title="Sales Distribution by Division"
+)
+
+st.plotly_chart(fig2, use_container_width=True)
+
+# -------------------------------------------------
+# SHIP MODE ANALYSIS
+# -------------------------------------------------
+st.subheader("🚚 Orders by Ship Mode")
+
+ship_mode_df = (
+    filtered_df.groupby("Ship Mode")
+    .size()
+    .reset_index(name="Orders")
+)
+
+fig3 = px.bar(
+    ship_mode_df,
+    x="Ship Mode",
+    y="Orders",
+    color="Ship Mode",
+    title="Orders by Ship Mode"
+)
+
+st.plotly_chart(fig3, use_container_width=True)
+
+# -------------------------------------------------
+# LEAD TIME DISTRIBUTION
+# -------------------------------------------------
+st.subheader("⏳ Lead Time Distribution")
+
+fig4 = px.histogram(
+    filtered_df,
+    x="Lead Time",
+    nbins=20,
+    title="Lead Time Distribution"
+)
+
+st.plotly_chart(fig4, use_container_width=True)
