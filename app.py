@@ -2,18 +2,16 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-# -------------------------------------------------
+
 # PAGE CONFIGURATION
-# -------------------------------------------------
 st.set_page_config(
     page_title="Factory Optimization Dashboard",
     page_icon="🏭",
     layout="wide"
 )
 
-# -------------------------------------------------
+
 # LOAD DATA
-# -------------------------------------------------
 @st.cache_data
 def load_data():
     df = pd.read_csv("Cleaned_Nassau_Data.csv")
@@ -32,9 +30,8 @@ def load_data():
 
 df = load_data()
 
-# -------------------------------------------------
+
 # TITLE
-# -------------------------------------------------
 st.title("🏭 Factory Reallocation & Shipping Optimization Recommendation System")
 
 st.markdown(
@@ -80,9 +77,7 @@ filtered_df = df[
     (df["Country/Region"].isin(country))
 ]
 
-# -------------------------------------------------
 # KPI CARDS
-# -------------------------------------------------
 st.subheader("📊 Key Performance Indicators")
 
 col1, col2, col3, col4 = st.columns(4)
@@ -125,9 +120,9 @@ col7.metric(
 )
 
 st.divider()
-# -------------------------------------------------
+
 # SALES BY REGION
-# -------------------------------------------------
+
 st.subheader("📈 Sales by Region")
 
 sales_region = (
@@ -146,9 +141,8 @@ fig1 = px.bar(
 
 st.plotly_chart(fig1, use_container_width=True)
 
-# -------------------------------------------------
+
 # SALES BY DIVISION
-# -------------------------------------------------
 st.subheader("🍫 Sales by Division")
 
 sales_division = (
@@ -166,9 +160,7 @@ fig2 = px.pie(
 
 st.plotly_chart(fig2, use_container_width=True)
 
-# -------------------------------------------------
 # SHIP MODE ANALYSIS
-# -------------------------------------------------
 st.subheader("🚚 Orders by Ship Mode")
 
 ship_mode_df = (
@@ -187,9 +179,7 @@ fig3 = px.bar(
 
 st.plotly_chart(fig3, use_container_width=True)
 
-# -------------------------------------------------
 # LEAD TIME DISTRIBUTION
-# -------------------------------------------------
 st.subheader("⏳ Lead Time Distribution")
 
 fig4 = px.histogram(
@@ -201,9 +191,7 @@ fig4 = px.histogram(
 
 st.plotly_chart(fig4, use_container_width=True)
 
-# -------------------------------------------------
 # PROFIT VS SALES
-# -------------------------------------------------
 st.subheader("💰 Sales vs Gross Profit")
 
 fig5 = px.scatter(
@@ -218,9 +206,8 @@ fig5 = px.scatter(
 
 st.plotly_chart(fig5, use_container_width=True)
 
-# -------------------------------------------------
 # TOP 10 PRODUCTS
-# -------------------------------------------------
+
 st.subheader("🏆 Top 10 Products by Sales")
 
 top_products = (
@@ -242,9 +229,7 @@ fig6 = px.bar(
 
 st.plotly_chart(fig6, use_container_width=True)
 
-# -------------------------------------------------
 # FACTORY PERFORMANCE
-# -------------------------------------------------
 if "Factory" in filtered_df.columns:
 
     st.subheader("🏭 Factory Performance")
@@ -261,16 +246,12 @@ if "Factory" in filtered_df.columns:
 
     st.dataframe(factory_df)
 
-# -------------------------------------------------
 # DATA TABLE
-# -------------------------------------------------
 st.subheader("📄 Complete Dataset")
 
 st.dataframe(filtered_df)
 
-# -------------------------------------------------
 # DOWNLOAD BUTTON
-# -------------------------------------------------
 csv = filtered_df.to_csv(index=False).encode("utf-8")
 
 st.download_button(
@@ -280,9 +261,7 @@ st.download_button(
     mime="text/csv"
 )
 
-# -------------------------------------------------
 # PROJECT INSIGHTS
-# -------------------------------------------------
 st.subheader("📌 Key Insights")
 
 st.markdown(f"""
@@ -293,11 +272,7 @@ st.markdown(f"""
 - **Average Profit Margin:** {filtered_df['Profit Margin'].mean():.2f}%
 - Use the sidebar filters to analyze different regions, divisions and shipping modes.
 """)
-
-# -------------------------------------------------
 # FACTORY RECOMMENDATION DASHBOARD
-# -------------------------------------------------
-
 st.subheader("🏭 Factory Recommendation Dashboard")
 
 factory_summary = (
@@ -312,9 +287,7 @@ factory_summary = (
 
 st.dataframe(factory_summary)
 
-# -------------------------------------------------
 # WHAT-IF SCENARIO ANALYSIS
-# -------------------------------------------------
 
 st.subheader("🔄 What-If Scenario Analysis")
 
@@ -340,9 +313,7 @@ st.metric(
     f"${scenario['Gross Profit'].mean():,.2f}"
 )
 
-# -------------------------------------------------
 # RISK PANEL
-# -------------------------------------------------
 
 st.subheader("⚠️ Risk & Impact Panel")
 
@@ -358,9 +329,7 @@ st.metric(
 
 st.dataframe(high_risk.head(20))
 
-# -------------------------------------------------
 # EXECUTIVE SUMMARY
-# -------------------------------------------------
 
 st.subheader("📋 Executive Summary")
 
@@ -375,9 +344,7 @@ st.success("""
 
 ✔ Dashboard supports business decision making.
 """)
-# -------------------------------------------------
 # OPTIMIZATION RECOMMENDATIONS
-# -------------------------------------------------
 
 st.subheader("🎯 Optimization Recommendations")
 
@@ -394,9 +361,7 @@ recommendations["Recommendation"] = recommendations["Average_Lead_Time"].apply(
 
 st.dataframe(recommendations)
 
-# -------------------------------------------------
 # DASHBOARD FOOTER
-# -------------------------------------------------
 
 st.markdown("---")
 
@@ -405,9 +370,7 @@ st.caption(
     "Developed using Streamlit, Python, Pandas and Plotly"
 )
 
-# -------------------------------------------------
 # ABOUT THE PROJECT
-# -------------------------------------------------
 
 st.markdown("---")
 
